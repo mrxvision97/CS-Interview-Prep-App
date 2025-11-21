@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Key, Zap, AlertCircle, Moon, Sun } from 'lucide-react';
+import { X, Moon, Sun } from 'lucide-react';
 import { AppSettings } from '../types';
 
 interface SettingsModalProps {
@@ -11,13 +11,6 @@ interface SettingsModalProps {
   onToggleDarkMode: () => void;
 }
 
-const AVAILABLE_MODELS = [
-  { id: 'gpt-4o', name: 'GPT-4o (Latest & Recommended)', description: 'Most capable model' },
-  { id: 'gpt-4o-mini', name: 'GPT-4o Mini', description: 'Fast and cost-effective' },
-  { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', description: 'Advanced reasoning' },
-  { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', description: 'Fast and affordable' },
-];
-
 export default function SettingsModal({
   isOpen,
   onClose,
@@ -26,14 +19,10 @@ export default function SettingsModal({
   isDarkMode,
   onToggleDarkMode,
 }: SettingsModalProps) {
-  const [apiKey, setApiKey] = useState(settings.apiKey);
-  const [model, setModel] = useState(settings.model);
   const [temperature, setTemperature] = useState(settings.temperature);
 
   useEffect(() => {
     if (isOpen) {
-      setApiKey(settings.apiKey);
-      setModel(settings.model);
       setTemperature(settings.temperature);
     }
   }, [isOpen, settings]);
@@ -42,8 +31,8 @@ export default function SettingsModal({
 
   const handleSave = () => {
     onSaveSettings({
-      apiKey,
-      model,
+      apiKey: settings.apiKey, // Keep existing
+      model: settings.model, // Keep existing
       temperature,
     });
     onClose();
@@ -65,69 +54,6 @@ export default function SettingsModal({
 
         {/* Content */}
         <div className="p-6 space-y-6">
-          {/* API Key Section */}
-          <div>
-            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-              <Key size={18} className="text-blue-600" />
-              OpenAI API Key
-            </label>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <div className="mt-2 flex items-start gap-2 p-3 bg-blue-50 rounded-lg">
-              <AlertCircle size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-blue-900">
-                Your API key is stored locally in your browser and never sent to any server except OpenAI.
-                Get your key from{' '}
-                <a
-                  href="https://platform.openai.com/api-keys"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline font-medium hover:text-blue-700"
-                >
-                  platform.openai.com
-                </a>
-              </p>
-            </div>
-          </div>
-
-          {/* Model Selection */}
-          <div>
-            <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-              <Zap size={18} className="text-purple-600" />
-              Model
-            </label>
-            <div className="space-y-2">
-              {AVAILABLE_MODELS.map((m) => (
-                <label
-                  key={m.id}
-                  className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                    model === m.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300 bg-white'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="model"
-                    value={m.id}
-                    checked={model === m.id}
-                    onChange={(e) => setModel(e.target.value)}
-                    className="mt-1"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900">{m.name}</div>
-                    <div className="text-sm text-gray-600">{m.description}</div>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-
           {/* Temperature */}
           <div>
             <label className="text-sm font-semibold text-gray-700 mb-2 block">

@@ -34,22 +34,21 @@ export function loadSettings(): AppSettings {
     const data = localStorage.getItem(SETTINGS_KEY);
     const saved = data ? JSON.parse(data) : null;
     
-    // Check for environment variables (Vite uses import.meta.env)
+    // Always use environment variables for API key and model
     const envApiKey = import.meta.env.VITE_OPENAI_API_KEY || '';
-    const envModel = import.meta.env.VITE_DEFAULT_MODEL || 'gpt-4o';
     const envTemperature = parseFloat(import.meta.env.VITE_DEFAULT_TEMPERATURE || '0.7');
     
-    // Priority: localStorage > environment variables > defaults
+    // Priority: environment variables > localStorage for temperature
     return {
-      apiKey: saved?.apiKey || envApiKey || '',
-      model: saved?.model || envModel || 'gpt-4o',
+      apiKey: envApiKey,
+      model: 'gpt-4o',
       temperature: saved?.temperature ?? envTemperature ?? 0.7,
     };
   } catch (error) {
     console.error('Failed to load settings:', error);
     return {
       apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-      model: import.meta.env.VITE_DEFAULT_MODEL || 'gpt-4o',
+      model: 'gpt-4o',
       temperature: parseFloat(import.meta.env.VITE_DEFAULT_TEMPERATURE || '0.7'),
     };
   }

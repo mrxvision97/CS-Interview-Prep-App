@@ -34,11 +34,6 @@ function App() {
     const loadedSettings = loadSettings();
     setSettings(loadedSettings);
     setConversations(loadConversations());
-
-    // Show settings modal if no API key
-    if (!loadedSettings.apiKey) {
-      setIsSettingsOpen(true);
-    }
   }, []);
 
   // Save conversations whenever they change
@@ -155,11 +150,6 @@ function App() {
 
   const handleSendMessage = async (content: string) => {
     if (!currentConversation) return;
-    if (!settings.apiKey) {
-      setError('Please add your OpenAI API key in settings');
-      setIsSettingsOpen(true);
-      return;
-    }
 
     setError(null);
     setIsLoading(true);
@@ -297,11 +287,7 @@ function App() {
             <ChatInput
               onSendMessage={handleSendMessage}
               disabled={isLoading}
-              placeholder={
-                !settings.apiKey
-                  ? 'Please add your API key in settings...'
-                  : 'Ask a question or share your thoughts...'
-              }
+              placeholder="Ask a question or share your thoughts..."
             />
           </>
         )}
